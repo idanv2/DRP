@@ -1,3 +1,5 @@
+#hello
+
 import matplotlib.pyplot as plt
 from matplotlib import animation
 import numpy as np
@@ -5,6 +7,7 @@ from numpy import random
 
 from IPython import display
 import math
+
 # Grid parameters.
 k1, k2 = 3., 3.
 nx = 40  # number of points in the x direction
