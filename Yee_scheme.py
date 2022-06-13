@@ -2,26 +2,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import matplotlib.pyplot as plt
-from matplotlib import animation
 import torch
 import math
-from mpl_toolkits.mplot3d import axes3d
 import matplotlib.animation as animation
-from  matplotlib.animation import FuncAnimation
-from IPython import display
-
-
+from experiments import generate_html
 # Grid parameters.
-k1, k2 = 3., 3.
+k1, k2 = 6., 6.
 nx = 40  # number of points in the x direction
 xmin, xmax = 0.0, 1.0  # limits in the x direction
 ny = nx  # number of points in the y direction
 ymin, ymax = 0.0, 1.0
 # dt=0.0002
 T = 1
-time_steps = 80
+time_steps = 300
 dt = T / time_steps
-time_steps_2 = time_steps*3   # limits in the y direction
+time_steps_2 = time_steps * 2  # limits in the y direction
 lx = xmax - xmin  # domain length in the x direction
 ly = ymax - ymin  # domain length in the y direction
 dx = lx / (nx - 1)  # grid spacing in the x direction
@@ -44,20 +39,19 @@ for n in range(time_steps_2 + 1):
             P * k1 * np.cos(P * k1 * (X + dx / 2)) * np.sin(P * k2 * Y) + P * k2 * np.cos(
         P * k2 * (X + dx / 2)) * np.sin(P * k1 * Y)))
 
-
-
 E = E_a[0].copy()
 Hx = Hx_a[0].copy()
 Hy = Hy_a[0].copy()
 Z = 1
 Loss_H = []
 Loss_E = []
-tot_E=[]
-
+tot_e=[]
+tot_hx=[]
 for n in range(time_steps_2):
+    tot_e.append(E.copy())
+    tot_hx.append(Hx.copy())
     loss_H = 0
     loss_E = 0
-    tot_E.append(E.copy())
     En = E.copy()
     Hnx = Hx.copy()
     Hny = Hy.copy()
@@ -82,54 +76,23 @@ for n in range(time_steps_2):
     loss_E += np.sqrt((np.square(E - E_a[n + 1])).mean(axis=None))
     loss_H += np.sqrt((np.square(Hx[1:nx - 1, 0:ny - 1] - Hx_a[n + 1][1:nx - 1, 0:ny - 1])).mean(axis=None))
     loss_H += np.sqrt((np.square(Hy[0:nx - 1, 1:ny - 1] - Hy_a[n + 1][0:nx - 1, 1:ny - 1])).mean(axis=None))
-    Loss_E.append(loss_E)
-    Loss_H.append(loss_H)
+    Loss_E.append(loss_E.copy())
+    Loss_H.append(loss_H.copy())
+    # print(E.max())
+    # print('E_error='+"{:.6f}".format(np.sqrt((np.square(E-E_a[n+1])).mean(axis=None))))
+    # print('Hx_error='+"{:.6f}".format(np.sqrt((np.square(Hx[1:nx-1,0:ny-1]-Hx_a[n+1][1:nx-1,0:ny-1])).mean(axis=None))))
+    # print('Hy_error='+"{:.6f}".format(np.sqrt((np.square(Hy[0:nx-1,1:ny-1]-Hy_a[n+1][0:nx-1,1:ny-1])).mean(axis=None))))
 
-fig=plt.figure(1)
-lines1=plt.plot([])
-line1=lines1[0]
-line2=lines1[0]
+plt.figure()
+plt.plot(np.arange(time_steps_2) * dt, Loss_E, color='red', label='Error for E')
+plt.plot(np.arange(time_steps_2) * dt, Loss_H, color='black', label='Error for H')
+plt.xlabel('time')
+plt.ylabel('error')
+plt.legend()
+plt.figure()
+plt.show()
 
-plt.xlim(0.,1.)
-plt.ylim(-1.,1.)
-def animate(frame):
-    line1.set_data((x,tot_E[frame][:,20]))
-
-
-
-
-anim=FuncAnimation(fig,animate,frames=time_steps_2,interval=100)
-video=anim.to_html5_video()
-html=display.HTML(video)
-display.display(html)
-plt.close()
-with open("data.html", "w") as file:
-    file.write(video)
-#
-#     # print('E_error='+"{:.6f}".format(np.sqrt((np.square(E-E_a[n+1])).mean(axis=None))))
-#     # print('Hx_error='+"{:.6f}".format(np.sqrt((np.square(Hx[1:nx-1,0:ny-1]-Hx_a[n+1][1:nx-1,0:ny-1])).mean(axis=None))))
-#     # print('Hy_error='+"{:.6f}".format(np.sqrt((np.square(Hy[0:nx-1,1:ny-1]-Hy_a[n+1][0:nx-1,1:ny-1])).mean(axis=None))))
-# plt.figure()
-# plt.plot(np.arange(time_steps_2) * dt, Loss_E, color='red', label='Error for E')
-# plt.plot(np.arange(time_steps_2) * dt, Loss_H, color='black', label='Error for H')
-# plt.xlabel('time')
-# plt.ylabel('error')
-# plt.legend()
-# plt.figure()
-# # plt.plot(Hx_a[n+1][:,10],color='red')
-# # plt.plot(E_a[0][:,20],color='red')
-# # print(E_a[0][10,10])
-#
-#
-# fig = plt.figure()
-# ax = axes3d.Axes3D(fig)
-#
-# # Initialize Bz when time = - dt / 2
-# wframe = ax.plot_wireframe(X, Y, Hx, rstride=2, cstride=2)
-#
-# ax.plot_wireframe(X, Y, Hx_a[n + 1], rstride=2, cstride=2, color='red', linestyle='dashed')
-# plt.show()
-# print(c)
-#
-#
-#
+# plt.plot(Hx_a[n+1][:,10],color='red')
+# plt.plot(E_a[0][:,20],color='red')
+# print(E_a[0][10,10])
+generate_html(c,xmax,nx,time_steps_2,E_a,tot_e)
