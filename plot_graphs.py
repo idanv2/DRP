@@ -11,12 +11,12 @@ def generate_data(xmax, nx,ny,k1,k2,dx,dy,dt,time_steps):
     Hy=[]
     for n in range(time_steps+1):
         E.append(torch.tensor( c * np.cos(c * n * dt) * (np.sin(P * k1 * X) * np.sin(P * k2 * Y) + np.sin(P * k2 * X) * np.sin(
-            P * k1 * Y))))
+            P * k1 * Y))).clone())
         Hx.append(torch.tensor( np.sin(c * (dt / 2) * (2 * n + 1)) * (
                 -P * k2 * np.sin(P * k1 * X) * np.cos(P * k2 * (Y + dy / 2)) - P * k1 * np.sin(
-            P * k2 * X) * np.cos(P * k1 * (Y + dy / 2)))))
+            P * k2 * X) * np.cos(P * k1 * (Y + dy / 2)))).clone())
         Hy.append(torch.tensor( np.sin(c * (dt / 2) * (2 * n + 1)) * (
                 P * k1 * np.cos(P * k1 * (X + dx / 2)) * np.sin(P * k2 * Y) + P * k2 * np.cos(
-            P * k2 * (X + dx / 2)) * np.sin(P * k1 * Y))))
+            P * k2 * (X + dx / 2)) * np.sin(P * k1 * Y))).clone())
     return  [E,Hx,Hy]
 #E_a,Hx_a,Hy_a=generate_data()

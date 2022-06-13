@@ -9,12 +9,12 @@ from main6 import run_p,Average
 xmin, xmax = 0.0, 1.0  # limits in the x direction
 ymin, ymax = 0.0, 1.0
 # dt=0.0002
-nx=10
-ny=10
+nx=40
+ny=40
 #k1=8.
 #k2=8.
-T=0.08
-time_steps=25
+T=1
+time_steps=80
 dt = T / time_steps  # limits in the y direction
 lx = xmax - xmin  # domain length in the x direction
 ly = ymax - ymin  # domain length in the y direction
@@ -43,7 +43,7 @@ plt.xlabel('k')
 plt.title('dx=dy='+str(1/nx)+', '+'dt='+str(dt)+', '+'Time steps='+str(time_steps))
 plt.ylabel('error')
 plt.plot(L,Loss, color='blue', linewidth = 3,  label = 'DL: 4-point stencil')
-#plt.plot(L,Loss_yee, color='red', linewidth = 3,  label = 'Yee scheme')
+plt.plot(L,Loss_yee, color='red', linewidth = 3,  label = 'Yee scheme')
 plt.plot(L,[0]*len(L), color='black', linewidth = 3,  label = 'Analytic solution (was not part of the training)')
 # show a legend on the plot
 plt.legend()
