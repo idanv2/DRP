@@ -7,8 +7,8 @@ import math
 import matplotlib.animation as animation
 from experiments import generate_html
 # Grid parameters.
-k1, k2 = 6., 6.
-nx = 40  # number of points in the x direction
+k1, k2 = 15., 15.
+nx = 80  # number of points in the x direction
 xmin, xmax = 0.0, 1.0  # limits in the x direction
 ny = nx  # number of points in the y direction
 ymin, ymax = 0.0, 1.0
@@ -95,4 +95,4 @@ plt.show()
 # plt.plot(Hx_a[n+1][:,10],color='red')
 # plt.plot(E_a[0][:,20],color='red')
 # print(E_a[0][10,10])
-generate_html(c,xmax,nx,time_steps_2,E_a,tot_e)
+generate_html(dt,c,xmax,nx,time_steps_2,Hx_a,tot_hx,"Hx.html")

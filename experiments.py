@@ -97,7 +97,7 @@ import math
 # with open("data.html", "w") as file:
 #     file.write(video)
 # plt.show()
-def generate_html(c,xmax,nx,time_steps_2,E_a,E):
+def generate_html(dt,c,xmax,nx,time_steps_2,E_a,E,file_name):
     fig = plt.figure()
     ax1 = plt.axes(xlim=(0., 1.), ylim=(-c * 4, c * 4))
     title = ax1.text(0.5, 0.85, "", bbox={'facecolor': 'w', 'alpha': 0.5, 'pad': 5},
@@ -123,7 +123,7 @@ def generate_html(c,xmax,nx,time_steps_2,E_a,E):
     # fake data
 
     def animate(n):
-        title.set_text('time='+ str(n))
+        title.set_text('time_step='+ str(n) +' from '+ str(time_steps_2) )
         x = np.linspace(0., xmax, nx)
         y = E_a[n][:, 9]
         x1 = x
@@ -144,11 +144,11 @@ def generate_html(c,xmax,nx,time_steps_2,E_a,E):
 
     # call the animator.  blit=True means only re-draw the parts that have changed.
     anim = animation.FuncAnimation(fig, animate, init_func=init,
-                                   frames=time_steps_2, interval=200, blit=True)
+                                   frames=time_steps_2, interval=100, blit=True)
 
     video = anim.to_html5_video()
     html = display.HTML(video)
     display.display(html)
     plt.close()
-    with open("data.html", "w") as file:
+    with open(file_name, "w") as file:
         file.write(video)
