@@ -5,7 +5,7 @@ import torch
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 from plot_graphs import generate_data
-from main6 import run_p,Average
+from main6 import run_p
 xmin, xmax = 0.0, 1.0  # limits in the x direction
 ymin, ymax = 0.0, 1.0
 # dt=0.0002

@@ -8,7 +8,7 @@ from plot_graphs import generate_data
 import tensorflow as tf
 def run_p(w1,k1,k2,nx,ny,T,time_steps,E_a, Hx_a, Hy_a,dt,dx,dy,training):
     frog=2
-
+    #print(E_a[0].requires_grad)
     filters = torch.cat(((w1 - 1) / 3, -w1 , w1, (1 - w1) / 3), 0).reshape(1, 1, 4)
     #print(filters.requires_grad)
 
@@ -25,12 +25,15 @@ def run_p(w1,k1,k2,nx,ny,T,time_steps,E_a, Hx_a, Hy_a,dt,dx,dy,training):
     loss=0
     if training:
         for n in range(time_steps):
-            E0 = E_a[n].detach().clone()
+            E0 = E_a[n].clone()
             E01 = E_a[n].clone()
-            Hx0 = Hx_a[n].detach().clone()
-            Hy0 = Hy_a[n].detach().clone()
+            Hx0 = Hx_a[n].clone()
+            Hy0 = Hy_a[n].clone()
             Hx01 = Hx_a[n].clone()
             Hy01 = Hy_a[n].clone()
+            #print(amper(E0, Hx0, Hy0, Z, dt, dx, dy, nx, ny, bc_filters, 1).requires_grad)
+            #print(E.requires_grad)
+            #print(n)
             E[1:nx - 1, 1:ny - 1] = amper(E0, Hx0, Hy0, Z, dt, dx, dy, nx, ny, bc_filters, 1)
             # E[1:nx - 1, 1:ny - 1] = amper(E0, Hx0, Hy0, Z, dt, dx, dy, nx, ny, bc_filters, 1)
             # print(E.requires_grad)
@@ -57,12 +60,13 @@ def run_p(w1,k1,k2,nx,ny,T,time_steps,E_a, Hx_a, Hy_a,dt,dx,dy,training):
     Hx = Hx_a[0].clone()
     Hy = Hy_a[0].clone()
     for n in range(time_steps):
-        E0=E.detach().clone()
+        E0=E.clone()
         E01=E.clone()
-        Hx0=Hx.detach().clone()
-        Hy0=Hy.detach().clone()
+        Hx0=Hx.clone()
+        Hy0=Hy.clone()
         Hx01 = Hx.clone()
         Hy01 = Hy.clone()
+        #print(E.dtype)
         E[1:nx-1,1:ny-1]=amper(E0,Hx0,Hy0,Z,dt,dx,dy,nx,ny,bc_filters,1)
         #E[1:nx - 1, 1:ny - 1] = amper(E0, Hx0, Hy0, Z, dt, dx, dy, nx, ny, bc_filters, 1)
         #print(E.requires_grad)

@@ -13,7 +13,7 @@ nx=40
 ny=40
 #k1=8.
 #k2=8.
-T=1
+T = 1
 time_steps=80
 dt = T / time_steps  # limits in the y direction
 lx = xmax - xmin  # domain length in the x direction
@@ -22,12 +22,12 @@ dx = lx / (nx - 1)  # grid spacing in the x direction
 dy = ly / (ny - 1)  # grid spacing in the y direction
 
 
-w_yee=torch.tensor([1.],dtype=float,requires_grad=False)
+w_yee=torch.tensor([1.], dtype=float, requires_grad=False)
 # Open the file in binary mode
 with open('w1.pkl', 'rb') as file:
     # Call load method to deserialze
     w1 = pickle.load(file).detach().clone()
-L=[3.,4.]
+L=[3.,4.,5.,6.]
 
 Loss=[]
 Loss_yee=[]

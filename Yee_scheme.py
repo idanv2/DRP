@@ -52,9 +52,7 @@ for n in range(time_steps_2):
     tot_hx.append(Hx.copy())
     loss_H = 0
     loss_E = 0
-    En = E.copy()
-    Hnx = Hx.copy()
-    Hny = Hy.copy()
+
 
     # print("{:.6f}".format((np.square(En[1:nx-1,1:ny-1]-E_a[1:nx-1,1:ny-1])).mean(axis=None)))
 
@@ -62,13 +60,13 @@ for n in range(time_steps_2):
     # print("{:.6f}".format((np.square(Hny[0:nx-1,1:ny-1]-Hy_a[0:nx-1,1:ny-1])).mean(axis=None)))
     # print("{:.6f}".format(abs(En-E_a).max()))
 
-    E[1:nx - 1, 1:ny - 1] = En[1:nx - 1, 1:ny - 1] + (Z * dt / dx) * (
-                Hny[1:nx - 1, 1:ny - 1] - Hny[0:nx - 2, 1:ny - 1]) - (Z * dt / dy) * (
-                                        Hnx[1:nx - 1, 1:ny - 1] - Hnx[1:nx - 1, 0:ny - 2])
+    E[1:nx - 1, 1:ny - 1] = E[1:nx - 1, 1:ny - 1] + (Z * dt / dx) * (
+                Hy[1:nx - 1, 1:ny - 1] - Hy[0:nx - 2, 1:ny - 1]) - (Z * dt / dy) * (
+                                        Hx[1:nx - 1, 1:ny - 1] - Hx[1:nx - 1, 0:ny - 2])
 
-    Em = E.copy()
-    Hx[1:nx - 1, 0:ny - 1] = Hnx[1:nx - 1, 0:ny - 1] - (dt / (Z * dy)) * (Em[1:nx - 1, 1:ny] - Em[1:nx - 1, 0:ny - 1])
-    Hy[0:nx - 1, 1:ny - 1] = Hny[0:nx - 1, 1:ny - 1] + (dt / (Z * dx)) * (Em[1:nx, 1:ny - 1] - Em[0:nx - 1, 1:ny - 1])
+    #Em = E.copy()
+    Hx[1:nx - 1, 0:ny - 1] = Hx[1:nx - 1, 0:ny - 1] - (dt / (Z * dy)) * (E[1:nx - 1, 1:ny] - E[1:nx - 1, 0:ny - 1])
+    Hy[0:nx - 1, 1:ny - 1] = Hy[0:nx - 1, 1:ny - 1] + (dt / (Z * dx)) * (E[1:nx, 1:ny - 1] - E[0:nx - 1, 1:ny - 1])
     # q=(np.square(((((Hx[1:nx,0:ny-1]-Hx[0:nx-1,0:ny-1])+(Hy[0:nx-1,1:ny]-Hy[0:nx-1,0:ny-1]))/(dx)).max()))).mean()
     # print("{:.6f}".format(q) )
 
@@ -95,4 +93,4 @@ plt.show()
 # plt.plot(Hx_a[n+1][:,10],color='red')
 # plt.plot(E_a[0][:,20],color='red')
 # print(E_a[0][10,10])
-generate_html(dt,c,xmax,nx,time_steps_2,Hx_a,tot_hx,"Hx.html")
+#generate_html(dt,c,xmax,nx,time_steps_2,Hx_a,tot_hx,"Hx.html")
