@@ -57,11 +57,11 @@ def create_train(nx, ny, dx, dy, dt, time_steps, k1,k2):
     return [E_a, Hx_a, Hy_a]
 xmin, xmax = 0.0, 1.0  # limits in the x direction
 ymin, ymax = 0.0, 1.0
-nx=20
-ny=20
+nx=120
+ny=120
 T=0.1
 Z=1
-time_steps=40
+time_steps=400
 dt = T / time_steps  # limits in the y direction
 lx = xmax - xmin  # domain length in the x direction
 ly = ymax - ymin  # domain length in the y direction
@@ -96,7 +96,7 @@ for i in range(epochs):
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-    print('loss='+str(loss))
+    print('loss='+str(loss*100))
 
 with open('w1.pkl', 'rb') as file:
     # Call load method to deserialze
@@ -122,7 +122,7 @@ for k in range(len(E_test)):
     Hy = Hy_test[k][0]
 
     for n in range(time_steps):
-        w=w_yee
+        w=w1
         E,Hx,Hy = forward_function(w, E.clone(), Hx.clone(), Hy.clone(), nx, ny, dt, Z, dx, dy, frog=2)
         loss1 +=norm2(E, E_test[k][n + 1])+norm2(Hx[1:nx - 1, 0:ny -1] , Hx_test[k][n + 1][1:nx - 1, 0:ny -1] )+norm2(Hy[0:nx - 1, 1:ny - 1], Hy_test[k][n + 1][0:nx - 1, 1:ny - 1])
         loss2 += (torch.square(((
@@ -136,3 +136,4 @@ for k in range(len(E_test)):
           #     Hy1[0:nx - 1, 1:ny - 1], Hy_test[n + 2][0:nx - 1, 1:ny - 1])
         #print(torch.sqrt(loss1*dt))
 print((torch.sqrt(dt*loss2)))
+print((torch.sqrt(dt*loss1)))
