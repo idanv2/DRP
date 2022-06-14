@@ -6,6 +6,7 @@ import math
 import torch.nn.functional as F
 from plot_graphs import generate_data
 import tensorflow as tf
+
 def run_p(w1,k1,k2,nx,ny,T,time_steps,E_a, Hx_a, Hy_a,dt,dx,dy,training):
     frog=2
     #print(E_a[0].requires_grad)
@@ -84,7 +85,7 @@ def run_p(w1,k1,k2,nx,ny,T,time_steps,E_a, Hx_a, Hy_a,dt,dx,dy,training):
         #print("{:.6f}".format((torch.square(E[frog2:nx - frog2, frog2:ny - frog2] - E_a[n+1][frog2:nx - frog2, frog2:ny - frog2])).mean()))
         loss = loss + (torch.square(E[frog2:nx - frog2, frog2:ny - frog2] - E_a[n+1][frog2:nx - frog2, frog2:ny - frog2])).mean()
         loss = loss + (torch.square(Hx[1:nx - 1, 0:ny -1] - Hx_a[n+1][1:nx - 1, 0:ny -1])).mean()
-        loss = loss + (torch.square(Hy[1-1:nx - 1, frog2:ny - frog2]- Hy_a[n+1][frog2-1:nx - frog2, frog2:ny - frog2])).mean()
+        loss = loss + (torch.square(Hy[0:nx - 1, 1:ny - 1]- Hy_a[n+1][frog2-1:nx - frog2, frog2:ny - frog2])).mean()
         #print(loss)
         if training:
             loss = loss + (torch.square(((((Hx[1:nx,0:ny-1]-Hx[0:nx-1,0:ny-1])+(Hy[0:nx-1,1:ny]-Hy[0:nx-1,0:ny-1]))/(dx))))).mean()

@@ -7,16 +7,17 @@ import math
 import matplotlib.animation as animation
 from experiments import generate_html
 # Grid parameters.
-k1, k2 = 15., 15.
-nx = 80  # number of points in the x direction
+k1, k2 = 1., 1.
+nx = 200  # number of points in the x direction
 xmin, xmax = 0.0, 1.0  # limits in the x direction
 ny = nx  # number of points in the y direction
 ymin, ymax = 0.0, 1.0
 # dt=0.0002
-T = 1
-time_steps = 300
+T = 0.1
+#2.3177733782823595
+time_steps = 160
 dt = T / time_steps
-time_steps_2 = time_steps * 2  # limits in the y direction
+time_steps_2 = time_steps   # limits in the y direction
 lx = xmax - xmin  # domain length in the x direction
 ly = ymax - ymin  # domain length in the y direction
 dx = lx / (nx - 1)  # grid spacing in the x direction
@@ -77,7 +78,7 @@ for n in range(time_steps_2):
     Loss_E.append(loss_E.copy())
     Loss_H.append(loss_H.copy())
     # print(E.max())
-    # print('E_error='+"{:.6f}".format(np.sqrt((np.square(E-E_a[n+1])).mean(axis=None))))
+     #print('E_error='+"{:.6f}".format(np.sqrt((np.square(E-E_a[n+1])).mean(axis=None))))
     # print('Hx_error='+"{:.6f}".format(np.sqrt((np.square(Hx[1:nx-1,0:ny-1]-Hx_a[n+1][1:nx-1,0:ny-1])).mean(axis=None))))
     # print('Hy_error='+"{:.6f}".format(np.sqrt((np.square(Hy[0:nx-1,1:ny-1]-Hy_a[n+1][0:nx-1,1:ny-1])).mean(axis=None))))
 
@@ -88,9 +89,18 @@ plt.xlabel('time')
 plt.ylabel('error')
 plt.legend()
 plt.figure()
-plt.show()
 
+l=0
+for n in range(len(tot_e)):
+   l=l+(abs(tot_e[n]-E_a[n]).max())
+l=l/(time_steps_2)
+print(np.log(l))
+print(np.log(dx))
 # plt.plot(Hx_a[n+1][:,10],color='red')
 # plt.plot(E_a[0][:,20],color='red')
 # print(E_a[0][10,10])
 #generate_html(dt,c,xmax,nx,time_steps_2,Hx_a,tot_hx,"Hx.html")
+y=[-7.370952382774799,-8.806939420281338,-10.2322572906061,-12.07722418198182]
+x=[-2.9444389791664407,-3.6635616461296463,-4.3694478524670215,-5.293304824724492]
+
+print(np.diff(y)/np.diff(x))

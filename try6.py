@@ -9,12 +9,12 @@ from main6 import run_p
 xmin, xmax = 0.0, 1.0  # limits in the x direction
 ymin, ymax = 0.0, 1.0
 # dt=0.0002
-nx=40
-ny=40
+nx=50
+ny=50
 #k1=8.
 #k2=8.
-T=1
-time_steps=80
+T=0.1
+time_steps=300
 dt = T / time_steps  # limits in the y direction
 lx = xmax - xmin  # domain length in the x direction
 ly = ymax - ymin  # domain length in the y direction
@@ -32,11 +32,11 @@ loss=0
 w1=torch.tensor([27/24],dtype=float,requires_grad=True)
 w_yee=torch.tensor([1.],dtype=float,requires_grad=False)
 w0=w1.detach().clone()
-L=[1.,3.]
+L=[1.]
 L_validate=[2.,4.]
 Loss=[]
 Loss_validate=[]
-epochs=6
+epochs=2
 optimizer = torch.optim.Adam([
     {'params': w1},
 ], lr=1e-2)
