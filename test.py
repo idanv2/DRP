@@ -3,12 +3,12 @@ import pickle
 import torch
 from plot_graphs import forward_function,create_train,norm2
 import matplotlib.pyplot as plt
-k_test=[1.,2.,3.]
+k_test=[6.,7.,8.,9.,10.]
 ymin, ymax = 0.0, 1.0
 ny=40
 xmin, xmax = 0.0, 1.0  # limits in the x direction
 nx=40
-T=0.1
+T=1
 Z=1
 time_steps=400
 dt = T / time_steps  # limits in the y direction
