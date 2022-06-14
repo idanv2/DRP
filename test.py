@@ -3,7 +3,7 @@ import pickle
 import torch
 from plot_graphs import forward_function,create_train,norm2
 import matplotlib.pyplot as plt
-k_test=[6.,7.,8.,9.,10.]
+k_test=[1.,2.,3.,4.,5.]
 ymin, ymax = 0.0, 1.0
 ny=40
 xmin, xmax = 0.0, 1.0  # limits in the x direction
@@ -79,3 +79,4 @@ plt.plot(k_test,tot_loss4,color='green', linewidth = 3,  label = 'Yee4')
 
 plt.legend()
 plt.show()
+print(w1)

@@ -90,3 +90,7 @@ def create_train(nx, ny, dx, dy, dt, time_steps, k1,k2):
     Hx.append( Hx_a.copy())
     Hy.append( Hy_a.copy())
     return [E_a, Hx_a, Hy_a]
+def chunks(lst, n):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]

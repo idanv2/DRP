@@ -12,7 +12,7 @@ def calc_loss(w1,time_steps,E_train,Hx_train,Hy_train,nx,ny,dt,Z,dx,dy):
         E,Hx,Hy = forward_function(w1, E_train[n].clone(), Hx_train[n].clone(), Hy_train[n].clone(), nx, ny, dt, Z, dx, dy, frog=2)
         loss1 +=norm2(E, E_train[n + 1])+norm2(Hx[1:nx - 1, 0:ny -1] , Hx_train[n + 1][1:nx - 1, 0:ny -1] )+norm2(Hy[0:nx - 1, 1:ny - 1], Hy_train[n + 1][0:nx - 1, 1:ny - 1])
         loss2 += (torch.square(((
-                ((Hx[1:nx, 0:ny - 1] - Hx[0:nx - 1, 0:ny - 1]) + (Hy[0:nx - 1, 1:ny] - Hy[0:nx - 1, 0:ny - 1])) / (
+                ((Hx[2:nx-1, 1:ny - 2] - Hx[1:nx - 2, 1:ny - 2]) + (Hy[1:nx - 2, 2:ny-1] - Hy[1:nx - 2, 1:ny - 2])) / (
             dx))))).mean()
         E1,Hx1,Hy1=forward_function(w1, E.clone(), Hx.clone(), Hy.clone(), nx, ny, dt, Z, dx, dy, frog=2)
         if n<time_steps-2:
@@ -72,8 +72,8 @@ w_yee=torch.tensor([1.],dtype=float,requires_grad=False)
 #Loss=[]
 
 k_train=[1.,2.]
-w1=torch.tensor([27/24],dtype=float,requires_grad=True)
-w4=torch.tensor([27/24],dtype=float,requires_grad=True)
+w1=torch.tensor([1.],dtype=float,requires_grad=True)
+w4=torch.tensor([27/24],dtype=float,requires_grad=False)
 optimizer = torch.optim.Adam([{'params': w1},], lr=1e-2)
 E_train=[]
 Hx_train=[]
@@ -86,7 +86,7 @@ for k1 in k_train:
       Hx_train.append(Hx_a)
       Hy_train.append(Hy_a)
 
-epochs=8
+epochs=7
 for i in range(epochs):
     loss=0.
     #print(w1)
@@ -96,44 +96,45 @@ for i in range(epochs):
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-    print('loss='+str(loss*100))
+    print('loss='+str(loss*10000))
+    print(w1.grad)
 
 with open('w1.pkl', 'rb') as file:
     # Call load method to deserialze
     w1 = pickle.load(file).detach().clone()
-k_test=k_train
-E_test = []
-Hx_test = []
-Hy_test = []
-for k1 in k_train:
-   for k2 in k_train:
-      E_a,Hx_a,Hy_a=create_train(nx, ny, dx, dy, dt, time_steps, k1,k2)
-      E_test.append(E_a)
-      Hx_test.append(Hx_a)
-      Hy_test.append(Hy_a)
-
-loss1 = 0.
-loss2 = 0.
-loss3 = 0.
-
-for k in range(len(E_test)):
-    E = E_test[k][0]
-    Hx = Hx_test[k][0]
-    Hy = Hy_test[k][0]
-
-    for n in range(time_steps):
-        w=w1
-        E,Hx,Hy = forward_function(w, E.clone(), Hx.clone(), Hy.clone(), nx, ny, dt, Z, dx, dy, frog=2)
-        loss1 +=norm2(E, E_test[k][n + 1])+norm2(Hx[1:nx - 1, 0:ny -1] , Hx_test[k][n + 1][1:nx - 1, 0:ny -1] )+norm2(Hy[0:nx - 1, 1:ny - 1], Hy_test[k][n + 1][0:nx - 1, 1:ny - 1])
-        loss2 += (torch.square(((
-                ((Hx[1:nx, 0:ny - 1] - Hx[0:nx - 1, 0:ny - 1]) + (Hy[0:nx - 1, 1:ny] - Hy[0:nx - 1, 0:ny - 1])) / (
-            dx))))).mean()
-        E1, Hx1, Hy1 = forward_function(w, E.clone(), Hx.clone(), Hy.clone(), nx, ny, dt, Z, dx, dy, frog=2)
-
-        #if n < (time_steps - 2):
-         #  loss3 += norm2(E1, E_test[n + 2]) + norm2(Hx1[1:nx - 1, 0:ny - 1],
-           #                                        Hx_test[n + 2][1:nx - 1, 0:ny - 1]) + norm2(
-          #     Hy1[0:nx - 1, 1:ny - 1], Hy_test[n + 2][0:nx - 1, 1:ny - 1])
-        #print(torch.sqrt(loss1*dt))
-print((torch.sqrt(dt*loss2)))
-print((torch.sqrt(dt*loss1)))
+# k_test=k_train
+# E_test = []
+# Hx_test = []
+# Hy_test = []
+# for k1 in k_train:
+#    for k2 in k_train:
+#       E_a,Hx_a,Hy_a=create_train(nx, ny, dx, dy, dt, time_steps, k1,k2)
+#       E_test.append(E_a)
+#       Hx_test.append(Hx_a)
+#       Hy_test.append(Hy_a)
+#
+# loss1 = 0.
+# loss2 = 0.
+# loss3 = 0.
+#
+# for k in range(len(E_test)):
+#     E = E_test[k][0]
+#     Hx = Hx_test[k][0]
+#     Hy = Hy_test[k][0]
+#
+#     for n in range(time_steps):
+#         w=w1
+#         E,Hx,Hy = forward_function(w, E.clone(), Hx.clone(), Hy.clone(), nx, ny, dt, Z, dx, dy, frog=2)
+#         loss1 +=norm2(E, E_test[k][n + 1])+norm2(Hx[1:nx - 1, 0:ny -1] , Hx_test[k][n + 1][1:nx - 1, 0:ny -1] )+norm2(Hy[0:nx - 1, 1:ny - 1], Hy_test[k][n + 1][0:nx - 1, 1:ny - 1])
+#         loss2 += (torch.square(((
+#                 ((Hx[1:nx, 0:ny - 1] - Hx[0:nx - 1, 0:ny - 1]) + (Hy[0:nx - 1, 1:ny] - Hy[0:nx - 1, 0:ny - 1])) / (
+#             dx))))).mean()
+#         E1, Hx1, Hy1 = forward_function(w, E.clone(), Hx.clone(), Hy.clone(), nx, ny, dt, Z, dx, dy, frog=2)
+#
+#         #if n < (time_steps - 2):
+#          #  loss3 += norm2(E1, E_test[n + 2]) + norm2(Hx1[1:nx - 1, 0:ny - 1],
+#            #                                        Hx_test[n + 2][1:nx - 1, 0:ny - 1]) + norm2(
+#           #     Hy1[0:nx - 1, 1:ny - 1], Hy_test[n + 2][0:nx - 1, 1:ny - 1])
+#         #print(torch.sqrt(loss1*dt))
+# print((torch.sqrt(dt*loss2)))
+# print((torch.sqrt(dt*loss1)))
