@@ -90,7 +90,20 @@ data=[]
 E1=E_a[4]
 Hx1=Hx_a[4]
 Hy1=Hy_a[4]
-N.forward(E1,Hx1,Hy1)
+y=N.forward(E1,Hx1,Hy1)
+N.optimizer.zero_grad()
+loss=N.loss(E1,y[0])
+loss.backward()
+print(N.params[0])
+N.optimizer.step()
+print(N.params[0])
+y=N.forward(E1,Hx1,Hy1)
+N.optimizer.zero_grad()
+loss=N.loss(E1,y[0])
+loss.backward()
+print(N.params[0])
+N.optimizer.step()
+print(N.params[0])
 
 # for k in range(par.time_steps):
 #     x=torch.cat((E_a[k],Hx_a[k],Hy_a[k]),0)
