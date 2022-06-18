@@ -19,7 +19,7 @@ class Custom_Dataset(torch.utils.data.dataset.Dataset):
         return len(self.dataset)
 class par:
     frog1=2
-    frog=2;batch_size=1
+    frog=2;batch_size=10
     nx=40;ny=40;ymin, ymax = 0.0, 1.0;xmin, xmax = 0.0, 1.0;Z=1
     T=1;time_steps = 400; dt = T / time_steps
     lx = xmax - xmin;ly = ymax - ymin;dx = lx / (nx - 1);dy = ly / (ny - 1)
@@ -105,14 +105,9 @@ for k1 in k_train:
       E_train.append(E_a.copy())
       Hx_train.append(Hx_a.copy())
       Hy_train.append(Hy_a.copy())
-E=E_a[0].clone()
-Hx=Hx_a[0].clone()
-Hy=Hy_a[0].clone()
 
-for n in range(par.time_steps):
-  E,Hx,Hy= N.forward(E.clone(),Hx.clone(),Hy.clone())
-  print(abs(E-E_a[n+1]).max())
-  #print(N.params)
+
+
 
 
 # epochs=7
@@ -167,26 +162,26 @@ train_loader = torch.utils.data.DataLoader(dataset=Custom_Dataset(data),
                                             batch_size=par.batch_size,
                                             shuffle=False)
 # # # training loop
-# loss=0
-# i*batches=samples
-#
-# epochs=7
-# for i in range(epochs):
-#     print(N.params)
-#
-#     for i, data in enumerate(train_loader):
-#         loss = 0.
-#         for k in range(par.batch_size):
-#             E = (data[0][k, 0:par.nx, 0:par.ny].clone(), data[1][k, 0:par.nx, 0:par.ny].clone(), data[2][k, 0:par.nx, 0:par.ny].clone())
-#             Hx = (data[0][k, par.nx:2 * par.nx, 0:par.nx].clone(), data[1][k, par.nx:2 * par.nx, 0:par.nx].clone(),
-#                   data[2][k, par.nx:2 * par.nx, 0:par.nx].clone())
-#             Hy = (data[0][k, 2 * par.nx:3 * par.nx, 0:par.nx].clone(), data[1][k, 2 * par.nx:3 * par.nx, 0:par.nx].clone(),
-#                   data[2][k, 2 * par.nx:3 * par.nx, 0:par.nx].clone())
-#             # f=N.forward(data[0][k,0:par.nx,0:par.ny],data[0][k,par.nx:2*par.nx,0:par.nx],data[0][k,2*par.nx:3*par.nx,0:par.nx])
-#             loss1, loss2, loss3 = N.loss(E, Hx, Hy)
-#             loss+=(loss1)
-#         N.optimizer.zero_grad()
-#         loss.backward()
-#         N.optimizer.step()
-#     print('loss='+str(loss))
-#     print(N.params)
+loss=0
+#i*batches=samples
+
+epochs=7
+for i in range(epochs):
+    print(N.params)
+
+    for i, data in enumerate(train_loader):
+        loss = 0.
+        for k in range(par.batch_size):
+            E = (data[0][k, 0:par.nx, 0:par.ny].clone(), data[1][k, 0:par.nx, 0:par.ny].clone(), data[2][k, 0:par.nx, 0:par.ny].clone())
+            Hx = (data[0][k, par.nx:2 * par.nx, 0:par.nx].clone(), data[1][k, par.nx:2 * par.nx, 0:par.nx].clone(),
+                  data[2][k, par.nx:2 * par.nx, 0:par.nx].clone())
+            Hy = (data[0][k, 2 * par.nx:3 * par.nx, 0:par.nx].clone(), data[1][k, 2 * par.nx:3 * par.nx, 0:par.nx].clone(),
+                  data[2][k, 2 * par.nx:3 * par.nx, 0:par.nx].clone())
+            # f=N.forward(data[0][k,0:par.nx,0:par.ny],data[0][k,par.nx:2*par.nx,0:par.nx],data[0][k,2*par.nx:3*par.nx,0:par.nx])
+            loss1, loss2, loss3 = N.loss(E, Hx, Hy)
+            loss+=(loss1)
+        N.optimizer.zero_grad()
+        loss.backward()
+        N.optimizer.step()
+    print('loss='+str(loss))
+    print(N.params)
