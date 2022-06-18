@@ -28,12 +28,12 @@ def generate_data(xmax, nx,ny,k1,k2,dx,dy,dt,time_steps):
     Hx=[]
     Hy=[]
     for n in range(time_steps+1):
-        E.append(( c * torch.cos(c * n * dt) * (torch.sin(P * k1 * X) * torch.sin(P * k2 * Y) + torch.sin(P * k2 * X) * torch.sin(
+        E.append(( c * np.cos(c * n * dt) * (torch.sin(P * k1 * X) * torch.sin(P * k2 * Y) + torch.sin(P * k2 * X) * torch.sin(
             P * k1 * Y))).type(torch.float64))
-        Hx.append(( torch.sin(c * (dt / 2) * (2 * n + 1)) * (
+        Hx.append(( np.sin(c * (dt / 2) * (2 * n + 1)) * (
                 -P * k2 * torch.sin(P * k1 * X) * torch.cos(P * k2 * (Y + dy / 2)) - P * k1 * torch.sin(
             P * k2 * X) * torch.cos(P * k1 * (Y + dy / 2)))).type(torch.float64))
-        Hy.append(( torch.sin(c * (dt / 2) * (2 * n + 1)) * (
+        Hy.append(( np.sin(c * (dt / 2) * (2 * n + 1)) * (
                 P * k1 * torch.cos(P * k1 * (X + dx / 2)) * torch.sin(P * k2 * Y) + P * k2 * torch.cos(
             P * k2 * (X + dx / 2)) * torch.sin(P * k1 * Y))).type(torch.float64))
 

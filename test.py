@@ -3,9 +3,9 @@ import pickle
 import torch
 from plot_graphs import forward_function,create_train,norm2
 import matplotlib.pyplot as plt
-from classes_version import par, Network
+#from classes_version import par, Network
 
-k_test=[1.,2.,3.,4.,5.]
+k_test=[1.,2.,3.,4.]
 ymin, ymax = 0.0, 1.0
 ny=40
 xmin, xmax = 0.0, 1.0  # limits in the x direction
@@ -18,12 +18,13 @@ lx = xmax - xmin  # domain length in the x direction
 ly = ymax - ymin  # domain length in the y direction
 dx = lx / (nx - 1)  # grid spacing in the x direction
 dy = ly / (ny - 1)  # grid spacing in the y direction
-
+print("1")
 w_yee=torch.tensor([1.],dtype=float,requires_grad=False)
 w4=torch.tensor([27/24],dtype=float,requires_grad=False)
-with open('w1.pkl', 'rb') as file:
+with open('file.pkl', 'rb') as file:
     # Call load method to deserialze
-    w1 = pickle.load(file).detach().clone()
+    w1 = pickle.load(file)[0].detach().clone()
+
 E_test = []
 Hx_test = []
 Hy_test = []
