@@ -80,8 +80,10 @@ class Network(par,nn.Module):
                                 Hy[1:par.nx - 2, 2:par.ny - 1] - Hy[1:par.nx - 2, 1:par.ny - 2])) / (
                         par.dx))))).mean()
             E1, Hx1, Hy1 = self.forward( E.clone(), Hx.clone(), Hy.clone())
-
-            loss3 = norm2(E1, E_train[n + 2]) + norm2(Hx1[1:par.nx - 1, 0:par.ny - 1],
+            if      abs(E_train[n + 2]).max()==0:
+                loss3=torch.tensor(0.)
+            else:
+                loss3 = norm2(E1, E_train[n + 2]) + norm2(Hx1[1:par.nx - 1, 0:par.ny - 1],
                                                            Hx_train[n + 2][1:par.nx - 1, 0:par.ny - 1]) + norm2(
                     Hy1[0:par.nx - 1, 1:par.ny - 1], Hy_train[n + 2][0:par.nx - 1, 1:par.ny - 1])
 
@@ -96,7 +98,7 @@ class Network(par,nn.Module):
 
 N=Network(torch.tensor([0.5],dtype=float,requires_grad=True))
 
-k_train=torch.tensor([1.])
+k_train=torch.tensor([1.,3.])
 w1=torch.tensor([1.],dtype=float,requires_grad=True)
 w4=torch.tensor([27/24],dtype=float,requires_grad=False)
 E_train=[]
@@ -126,9 +128,10 @@ for k in range(len(E_train)):
             y = torch.cat((E_a[n + 1], Hx_a[n + 1], Hy_a[n + 1]), 0)
             z = torch.cat((E_a[n + 2], Hx_a[n + 2], Hy_a[n + 2]), 0)
         else:
+            #print("yes")
             x = torch.cat((E_a[n], Hx_a[n], Hy_a[n]), 0)
             y = torch.cat((E_a[n + 1], Hx_a[n + 1], Hy_a[n + 1]), 0)
-            z = torch.cat((E_a[n] * 0, Hx_a[n] * 0, Hy_a[n] * 0), 0)
+            z = torch.cat((torch.zeros((par.nx,par.ny)), torch.zeros((par.nx,par.ny)), torch.zeros((par.nx,par.ny))), 0)
 
         data.append((x, y, z))
 train_loader = torch.utils.data.DataLoader(dataset=Custom_Dataset(data),
@@ -141,7 +144,7 @@ tot_los=[]
 epochs=10
 mon=0
 for j in range(epochs):
-    print(N.params)
+
 
     for i, data in enumerate(train_loader):
         loss = 0.
@@ -153,14 +156,14 @@ for j in range(epochs):
             Hy = (data[0][k, 2 * par.nx:3 * par.nx, 0:par.nx].clone(), data[1][k, 2 * par.nx:3 * par.nx, 0:par.nx].clone(),
                   data[2][k, 2 * par.nx:3 * par.nx, 0:par.nx].clone())
             loss1, loss2, loss3 = N.loss(E, Hx, Hy)
-            loss+=(loss1+loss2)
+            loss+=(loss1+loss2+loss3)
         tot_los.append(loss.clone().detach().cpu().numpy())
         N.optimizer.zero_grad()
         loss.backward()
         N.optimizer.step()
 
 
-    print('loss='+str(loss))
+    #print('loss='+str(loss))
     #print(N.params)
 plt.plot(range(len(tot_los)),tot_los)
 print(tot_los)

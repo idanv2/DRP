@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import torch
+import tensorflow as tf
 from torch.functional import F
 def amper(E,Hnx,Hny,Z,dt,dx,dy,nx,ny,filters,frog):
     S1 = (Z * dt / dx) * F.conv1d(torch.transpose(Hny, 0, 1).reshape(ny, 1, nx),filters).reshape(ny, nx - (2*frog-1)).transpose(1, 0)[
@@ -28,12 +29,12 @@ def generate_data(xmax, nx,ny,k1,k2,dx,dy,dt,time_steps):
     Hx=[]
     Hy=[]
     for n in range(time_steps+1):
-        E.append(( c * torch.cos(c * n * dt) * (torch.sin(P * k1 * X) * torch.sin(P * k2 * Y) + torch.sin(P * k2 * X) * torch.sin(
+        E.append(( c * np.cos(c * n * dt) * (torch.sin(P * k1 * X) * torch.sin(P * k2 * Y) + torch.sin(P * k2 * X) * torch.sin(
             P * k1 * Y))).type(torch.float64))
-        Hx.append(( torch.sin(c * (dt / 2) * (2 * n + 1)) * (
+        Hx.append(( np.sin(c * (dt / 2) * (2 * n + 1)) * (
                 -P * k2 * torch.sin(P * k1 * X) * torch.cos(P * k2 * (Y + dy / 2)) - P * k1 * torch.sin(
             P * k2 * X) * torch.cos(P * k1 * (Y + dy / 2)))).type(torch.float64))
-        Hy.append(( torch.sin(c * (dt / 2) * (2 * n + 1)) * (
+        Hy.append(( np.sin(c * (dt / 2) * (2 * n + 1)) * (
                 P * k1 * torch.cos(P * k1 * (X + dx / 2)) * torch.sin(P * k2 * Y) + P * k2 * torch.cos(
             P * k2 * (X + dx / 2)) * torch.sin(P * k1 * Y))).type(torch.float64))
 
@@ -95,3 +96,12 @@ def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
+class operations:
+    def __init__(self, _dataset):
+        pass
+    def in_place(self,B,ind1,ind2):
+        m1 = tf.range(tf.shape(B)[0]) in ind1
+        m2 = tf.range(tf.shape(B)[1]) in ind2
+        f = tf.where(m, value_x / norm_value, 1)
+
+
