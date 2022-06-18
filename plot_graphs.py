@@ -22,20 +22,21 @@ def faraday(E,Hnx,Hny,Z,dt,dx,dy,nx,ny,filters,frog):
 def generate_data(xmax, nx,ny,k1,k2,dx,dy,dt,time_steps):
     c = math.pi * (np.sqrt(k1 ** 2 + k2 ** 2))
     P = math.pi
-    x=np.linspace(0.,xmax,nx)
-    X,Y =np.meshgrid(x, x, indexing='ij')
+    x=torch.linspace(0.,xmax,nx)
+    X,Y =torch.meshgrid(x, x, indexing='ij')
     E=[]
     Hx=[]
     Hy=[]
     for n in range(time_steps+1):
-        E.append(torch.tensor( c * np.cos(c * n * dt) * (np.sin(P * k1 * X) * np.sin(P * k2 * Y) + np.sin(P * k2 * X) * np.sin(
-            P * k1 * Y))).clone().detach())
-        Hx.append(torch.tensor( np.sin(c * (dt / 2) * (2 * n + 1)) * (
-                -P * k2 * np.sin(P * k1 * X) * np.cos(P * k2 * (Y + dy / 2)) - P * k1 * np.sin(
-            P * k2 * X) * np.cos(P * k1 * (Y + dy / 2)))).clone().detach())
-        Hy.append(torch.tensor( np.sin(c * (dt / 2) * (2 * n + 1)) * (
-                P * k1 * np.cos(P * k1 * (X + dx / 2)) * np.sin(P * k2 * Y) + P * k2 * np.cos(
-            P * k2 * (X + dx / 2)) * np.sin(P * k1 * Y))).clone().detach())
+        E.append(( c * torch.cos(c * n * dt) * (torch.sin(P * k1 * X) * torch.sin(P * k2 * Y) + torch.sin(P * k2 * X) * torch.sin(
+            P * k1 * Y))).type(torch.float64))
+        Hx.append(( torch.sin(c * (dt / 2) * (2 * n + 1)) * (
+                -P * k2 * torch.sin(P * k1 * X) * torch.cos(P * k2 * (Y + dy / 2)) - P * k1 * torch.sin(
+            P * k2 * X) * torch.cos(P * k1 * (Y + dy / 2)))).type(torch.float64))
+        Hy.append(( torch.sin(c * (dt / 2) * (2 * n + 1)) * (
+                P * k1 * torch.cos(P * k1 * (X + dx / 2)) * torch.sin(P * k2 * Y) + P * k2 * torch.cos(
+            P * k2 * (X + dx / 2)) * torch.sin(P * k1 * Y))).type(torch.float64))
+
     return  [E,Hx,Hy]
 #E_a,Hx_a,Hy_a=generate_data()
 def calc_loss(w1,time_steps,E_train,Hx_train,Hy_train,nx,ny,dt,Z,dx,dy):

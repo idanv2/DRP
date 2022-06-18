@@ -18,8 +18,8 @@ class Custom_Dataset(torch.utils.data.dataset.Dataset):
     def __len__(self):
         return len(self.dataset)
 class par:
-    frog1=2
-    frog=2;batch_size=10
+    lr = 1e-2;batch_size = 10;
+    frog=2; frog1=2
     nx=40;ny=40;ymin, ymax = 0.0, 1.0;xmin, xmax = 0.0, 1.0;Z=1
     T=1;time_steps = 400; dt = T / time_steps
     lx = xmax - xmin;ly = ymax - ymin;dx = lx / (nx - 1);dy = ly / (ny - 1)
@@ -33,7 +33,7 @@ class Network(par,nn.Module):
         #super(Network,self).__init__()
         self.params = []
         self.params.append(w1)
-        self.optimizer=torch.optim.Adam([{'params': self.params},], lr=1e-2)
+        self.optimizer=torch.optim.Adam([{'params': self.params},], lr=par.lr)
 
     def forward(self,X1,X2,X3):
          E=X1.clone()
@@ -41,7 +41,6 @@ class Network(par,nn.Module):
          Hy=X3.clone()
          w1=self.params[0]
          filters = torch.cat(((w1 - 1) / 3, -w1, w1, (1 - w1) / 3), 0).reshape(1, 1, 4)
-
          E[1:par.nx - 1, 1:par.ny - 1] = self.amper(X1.clone(), X2.clone(), X3.clone(),par.bc_filters,1)
          E[par.frog:par.nx - par.frog, par.frog:par.ny - par.frog] = self.amper(X1.clone(), X2.clone(), X3.clone(),filters,par.frog)
          Hx[1:par.nx - 1, 0:par.ny - 1] = self.faraday(E.clone(), X2.clone(), X3.clone(),par.bc_filters,1)[0]
@@ -110,40 +109,9 @@ for k1 in k_train:
 
 
 
-# epochs=7
-# for i in range(epochs):
-#     loss=0.
-#     #print(w1)
-#     for k in range(len(E_train)):
-#             loss += N.loss(E_train[k].copy(),Hx_train[k].copy(),Hy_train[k].copy())
-#     optimizer.zero_grad()
-#     loss.backward()
-#     optimizer.step()
-#     print('loss='+str(loss*10000))
-#     print(N.params)
 
 
-# k1=1.
-# k2=1.
-# E_a,Hx_a,Hy_a=create_train(par.nx, par.ny, par.dx, par.dy, par.dt, par.time_steps,k1,k1)
-# data=[]
-# E1=E_a[4]
-# Hx1=Hx_a[4]
-# Hy1=Hy_a[4]
-# y=N.forward(E1,Hx1,Hy1)
-# N.optimizer.zero_grad()
-# loss=N.loss(E1,y[0])
-# loss.backward()
-# #print(N.params[0])
-# N.optimizer.step()
-# #print(N.params[0])
-# y=N.forward(E1,Hx1,Hy1)
-# N.optimizer.zero_grad()
-# loss=N.loss(E1,y[0])
-# loss.backward()
-# #print(N.params[0])
-# N.optimizer.step()
-# #print(N.params[0])
+
 #
 data=[]
 for k in range(len(E_train)):
@@ -177,9 +145,8 @@ for i in range(epochs):
                   data[2][k, par.nx:2 * par.nx, 0:par.nx].clone())
             Hy = (data[0][k, 2 * par.nx:3 * par.nx, 0:par.nx].clone(), data[1][k, 2 * par.nx:3 * par.nx, 0:par.nx].clone(),
                   data[2][k, 2 * par.nx:3 * par.nx, 0:par.nx].clone())
-            # f=N.forward(data[0][k,0:par.nx,0:par.ny],data[0][k,par.nx:2*par.nx,0:par.nx],data[0][k,2*par.nx:3*par.nx,0:par.nx])
             loss1, loss2, loss3 = N.loss(E, Hx, Hy)
-            loss+=(loss1)
+            loss+=(loss1+loss2+loss3)
         N.optimizer.zero_grad()
         loss.backward()
         N.optimizer.step()
