@@ -1,6 +1,9 @@
 import tensorflow as tf
 import numpy as np
 import torch
+import matplotlib.pyplot as plt
+
+import pickle
 import torch.nn as nn
 from  torch.functional import F
 import torchvision
@@ -18,10 +21,10 @@ class Custom_Dataset(torch.utils.data.dataset.Dataset):
     def __len__(self):
         return len(self.dataset)
 class par:
-    lr = 1e-2;batch_size = 10;
+    lr = 1e-3;batch_size = 10;
     frog=2; frog1=2
     nx=40;ny=40;ymin, ymax = 0.0, 1.0;xmin, xmax = 0.0, 1.0;Z=1
-    T=1;time_steps = 400; dt = T / time_steps
+    T=0.1;time_steps = 400; dt = T / time_steps
     lx = xmax - xmin;ly = ymax - ymin;dx = lx / (nx - 1);dy = ly / (ny - 1)
     w_yee = torch.tensor([1.],dtype=float)
     bc_filters = torch.tensor([-1., 1.], dtype=float).reshape(1, 1, 2)
@@ -83,13 +86,15 @@ class Network(par,nn.Module):
                     Hy1[0:par.nx - 1, 1:par.ny - 1], Hy_train[n + 2][0:par.nx - 1, 1:par.ny - 1])
 
             return torch.sqrt(loss1),torch.sqrt(loss2),torch.sqrt(loss3)
+    
 
 
 
 
 
 
-N=Network(torch.tensor([1.],dtype=float,requires_grad=True))
+
+N=Network(torch.tensor([0.5],dtype=float,requires_grad=True))
 
 k_train=torch.tensor([1.])
 w1=torch.tensor([1.],dtype=float,requires_grad=True)
@@ -128,17 +133,19 @@ for k in range(len(E_train)):
         data.append((x, y, z))
 train_loader = torch.utils.data.DataLoader(dataset=Custom_Dataset(data),
                                             batch_size=par.batch_size,
-                                            shuffle=False)
+                                            shuffle=True)
 # # # training loop
 loss=0
 #i*batches=samples
-
-epochs=7
-for i in range(epochs):
+tot_los=[]
+epochs=10
+mon=0
+for j in range(epochs):
     print(N.params)
 
     for i, data in enumerate(train_loader):
         loss = 0.
+        #print(N.params)
         for k in range(par.batch_size):
             E = (data[0][k, 0:par.nx, 0:par.ny].clone(), data[1][k, 0:par.nx, 0:par.ny].clone(), data[2][k, 0:par.nx, 0:par.ny].clone())
             Hx = (data[0][k, par.nx:2 * par.nx, 0:par.nx].clone(), data[1][k, par.nx:2 * par.nx, 0:par.nx].clone(),
@@ -146,9 +153,18 @@ for i in range(epochs):
             Hy = (data[0][k, 2 * par.nx:3 * par.nx, 0:par.nx].clone(), data[1][k, 2 * par.nx:3 * par.nx, 0:par.nx].clone(),
                   data[2][k, 2 * par.nx:3 * par.nx, 0:par.nx].clone())
             loss1, loss2, loss3 = N.loss(E, Hx, Hy)
-            loss+=(loss1+loss2+loss3)
+            loss+=(loss1+loss2)
+        tot_los.append(loss.clone().detach().cpu().numpy())
         N.optimizer.zero_grad()
         loss.backward()
         N.optimizer.step()
+
+
     print('loss='+str(loss))
-    print(N.params)
+    #print(N.params)
+plt.plot(range(len(tot_los)),tot_los)
+print(tot_los)
+plt.show()
+# Open a file and use dump()
+with open('file.pkl', 'wb') as file:
+    pickle.dump(N.params,file)

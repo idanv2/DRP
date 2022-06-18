@@ -3,6 +3,8 @@ import pickle
 import torch
 from plot_graphs import forward_function,create_train,norm2
 import matplotlib.pyplot as plt
+from classes_version import par, Network
+
 k_test=[1.,2.,3.,4.,5.]
 ymin, ymax = 0.0, 1.0
 ny=40
