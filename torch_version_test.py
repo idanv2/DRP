@@ -1,7 +1,7 @@
 import numpy as np
 import pickle
 import torch
-from plot_graphs import forward_function,create_train,norm2
+from functions_for_torch import forward_function,create_train,norm2
 import matplotlib.pyplot as plt
 #from classes_version import par, Network
 

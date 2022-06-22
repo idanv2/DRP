@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import notes
 import pickle
 from tensorflow import keras
-from plot_graphs import *
+from functions_for_torch import *
 
 
 

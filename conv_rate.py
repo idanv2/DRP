@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import torch
 import math
 import matplotlib.animation as animation
-from plot_graphs import generate_data
+from functions_for_torch import generate_data
 
 
 def run_p(w1, k1, k2, nx, ny, T, time_steps, E_a, Hx_a, Hy_a, dt, dx, dy):

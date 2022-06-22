@@ -4,7 +4,7 @@ import torch
 import time
 import math
 import torch.nn.functional as F
-from plot_graphs import generate_data
+from functions_for_torch import generate_data
 import tensorflow as tf
 
 def run_p(w1,k1,k2,nx,ny,T,time_steps,E_a, Hx_a, Hy_a,dt,dx,dy,training):
