@@ -62,7 +62,7 @@ class Network(par):
         S4 = tf.pad((par.dt / (par.Z * par.dx)) * self.Dx(E),self.colpadE)
         Ax = (Hx- S3)
         Ay = (Hy+ S4)
-###
+
         return Ax, Ay
     def Dy(self,B):
         return tf.nn.conv1d(B,self.filter,stride=1, padding='VALID')
