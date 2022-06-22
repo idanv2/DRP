@@ -1,6 +1,7 @@
 import numpy as np
 import pickle
 import torch
+# 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
 from main6 import amper, faraday
 from plot_graphs import generate_data
 def calc_loss(w1,time_steps,E_train,Hx_train,Hy_train,nx,ny,dt,Z,dx,dy):
