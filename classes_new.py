@@ -10,25 +10,25 @@ from functions_for_torch import *
 
 
 class par:
-    lr = 1e-3;
-    batch_size = 10;
-    frog = 2;
+    lr = 1e-3
+    batch_size = 10
+    frog = 2
     frog1 = 2
-    nx = 30;
-    ny = 30;
+    nx = 30
+    ny = 30
     C = notes.coding_values(nx, frog)
-    E_code=C.E;Hx_code=C.Hx;Hy_code=C.Hy
+    E_code=C.EHx_code=C.HxHy_code=C.Hy
     BC = notes.BC_L(C.E, C.Hx, C.Hy)
-    Ebc = BC.Ebc; Hxbc=BC.Hxbc;Hybc=BC.Hybc
-    ymin, ymax = 0.0, 1.0;
-    xmin, xmax = 0.0, 1.0;
+    Ebc = BC.Ebc Hxbc=BC.HxbcHybc=BC.Hybc
+    ymin, ymax = 0.0, 1.0
+    xmin, xmax = 0.0, 1.0
     Z = 1
-    T = 0.1;
-    time_steps = 400;
+    T = 0.1
+    time_steps = 400
     dt = T / time_steps
-    lx = xmax - xmin;
-    ly = ymax - ymin;
-    dx = lx / (nx - 1);
+    lx = xmax - xmin
+    ly = ymax - ymin
+    dx = lx / (nx - 1)
     dy = ly / (ny - 1)
     w_yee = tf.Variable(tf.constant([-1.,1.],shape=[2,1,1]))
     bc_left = tf.Variable(tf.constant([0,-1.,1.,0],shape=[4,1,1],dtype=tf.float64))
