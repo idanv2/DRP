@@ -5,7 +5,7 @@ import numpy as np
 
 from constants import Constants
 from data_generator import generate_data
-#ds
+
 # Open the file in binary mode
 with open('files/ex.pkl', 'rb') as file:
     ex = pickle.load(file)
